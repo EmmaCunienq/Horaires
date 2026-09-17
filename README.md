@@ -19,7 +19,7 @@ Puis ouvrir http://localhost:8000. Aucun build ni installation nécessaire.
 - Frise par cases de 15 minutes, repères horaires, travail en rose soutenu, déjeuner en rose poudré avec un motif, hors travail en gris rosé. Les cases travaillées se rejoignent en bandes continues ; la pause et le hors travail restent séparés. Survoler une case affiche ses intervalles exacts.
 - Les saisies restent précises à la minute : une case traversée par une limite affiche les couleurs dans les proportions correspondantes, sans arrondi du temps travaillé.
 - La plage s'étend aux heures entières avec au moins 30 minutes de marge, sauf aux limites de la journée (00:00 et 24:00).
-- Sur petit écran, les champs passent sur deux colonnes et seule la frise défile horizontalement, au doigt, au pavé tactile ou au clavier après sélection.
+- Sur petit écran, le widget entier rétrécit proportionnellement depuis sa largeur de référence de 920 px. Les quatre champs restent alignés : textes, frise et espacements sont réduits ensemble. La hauteur occupée est ajustée automatiquement, y compris lorsqu’une erreur apparaît.
 - Les saisies sont sauvegardées via `localStorage` (`mes-horaires.v2`) avec la date locale de l’utilisateur, y compris une saisie temporairement incomplète. Elles sont restaurées uniquement le même jour. Les anciennes sauvegardes non datées (`mes-horaires.v1`) sont ignorées. Aucun historique quotidien ni synchronisation.
 - À minuit local, les champs reviennent automatiquement à 00:00 et la fin est recalculée. Si Notion ou le navigateur suspend la page, le changement de date est vérifié dès sa reprise (retour au premier plan, focus, réaffichage ou saisie). Les changements d’heure sont pris en compte ; aucune date UTC n’est utilisée.
 - Si le stockage est bloqué, le calcul reste utilisable et un message le signale. En iframe, les politiques du navigateur peuvent isoler ou bloquer le stockage.
@@ -41,7 +41,7 @@ Voir la [documentation GitHub Pages](https://docs.github.com/en/pages/getting-st
 
 ## Autres hébergements statiques
 
-Publier les fichiers `index.html`, `style.css` et `script.js` ensemble, en conservant leurs noms. Aucun secret ni variable d'environnement.
+Publier les fichiers `index.html`, `style.css`, `script.js` et `layout.js` ensemble, en conservant leurs noms. Aucun secret ni variable d'environnement.
 
 - **Netlify** : déposer le dossier du site dans l'interface de déploiement manuel, ou connecter le dépôt sans commande de build et avec `.` comme dossier publié.
 - **Vercel** : importer le dépôt en tant que site statique (preset Other), sans commande de build, et servir la racine du projet.
