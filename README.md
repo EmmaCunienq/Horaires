@@ -15,12 +15,13 @@ Puis ouvrir http://localhost:8000. Aucun build ni installation nécessaire.
 ## Fonctionnement
 
 - Trois horaires modifiables ; fin de journée calculée immédiatement : début + 480 minutes + durée du déjeuner.
-- Valeurs initiales : 08:30, 12:30 et 13:30 → fin à 17:30.
+- Valeurs initiales et début de chaque nouvelle journée : 00:00 pour les trois champs → fin calculée à 08:00.
 - Frise par cases de 15 minutes, repères horaires, travail en rose soutenu, déjeuner en rose poudré avec un motif, hors travail en gris rosé. Les cases travaillées se rejoignent en bandes continues ; la pause et le hors travail restent séparés. Survoler une case affiche ses intervalles exacts.
 - Les saisies restent précises à la minute : une case traversée par une limite affiche les couleurs dans les proportions correspondantes, sans arrondi du temps travaillé.
 - La plage s'étend aux heures entières avec au moins 30 minutes de marge, sauf aux limites de la journée (00:00 et 24:00).
 - Sur petit écran, les champs passent sur deux colonnes et seule la frise défile horizontalement, au doigt, au pavé tactile ou au clavier après sélection.
-- Les dernières saisies sont restaurées via `localStorage` (`mes-horaires.v1`), y compris une saisie temporairement incomplète. Elles restent propres au navigateur et au domaine ; aucun historique quotidien ni synchronisation.
+- Les saisies sont sauvegardées via `localStorage` (`mes-horaires.v2`) avec la date locale de l’utilisateur, y compris une saisie temporairement incomplète. Elles sont restaurées uniquement le même jour. Les anciennes sauvegardes non datées (`mes-horaires.v1`) sont ignorées. Aucun historique quotidien ni synchronisation.
+- À minuit local, les champs reviennent automatiquement à 00:00 et la fin est recalculée. Si Notion ou le navigateur suspend la page, le changement de date est vérifié dès sa reprise (retour au premier plan, focus, réaffichage ou saisie). Les changements d’heure sont pris en compte ; aucune date UTC n’est utilisée.
 - Si le stockage est bloqué, le calcul reste utilisable et un message le signale. En iframe, les politiques du navigateur peuvent isoler ou bloquer le stockage.
 
 Les horaires doivent appartenir au même jour. Les champs vides, une pause avant le début, une fin de pause antérieure à son début, plus de 8 h avant le déjeuner ou une fin calculée à minuit ou après sont refusés. Une pause de zéro minute est autorisée. Lors d'une erreur, la fin et la frise sont masquées pour éviter tout résultat trompeur.
@@ -65,4 +66,4 @@ Exécuter les tests (Node.js, sans dépendance) :
 node --test tests/widget.test.cjs
 ```
 
-Ils couvrent les calculs, les erreurs, plus de 900 combinaisons de frise, les cases partagées à la minute et la persistance avec un DOM et un stockage simulés. Ils ne remplacent pas un essai visuel dans un navigateur : contrôler le rendu à 320, 375, 768 et 1024 px, le défilement de la frise et la restauration après rechargement, puis dans l'Embed Notion.
+Ils couvrent les calculs, les erreurs, plus de 900 combinaisons de frise, les cases partagées à la minute et la persistance avec un DOM, une horloge et un stockage simulés : restauration le même jour, passage à minuit, reprise après suspension et changements d’heure. Les tests ont été exécutés sous les fuseaux Europe/Paris, America/Los_Angeles et Pacific/Kiritimati. Ils ne remplacent pas un essai visuel dans un navigateur : contrôler le rendu à 320, 375, 768 et 1024 px, le défilement de la frise et la restauration après rechargement, puis dans l'Embed Notion.

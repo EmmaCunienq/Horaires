@@ -1,8 +1,17 @@
 'use strict';
 
-const STORAGE_KEY = 'mes-horaires.v1';
-const DEFAULTS = { start: '08:30', lunchStart: '12:30', lunchEnd: '13:30' };
+const STORAGE_KEY = 'mes-horaires.v2';
+const DEFAULTS = { start: '00:00', lunchStart: '00:00', lunchEnd: '00:00' };
 const WORK_MINUTES = 8 * 60;
+
+function localDateKey(now = new Date()) {
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+}
+
+function untilLocalMidnight(now = new Date()) {
+  // Une date calendaire locale tient compte des journées de 23 ou 25 heures.
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - now;
+}
 
 function toMinutes(value) {
   if (typeof value !== 'string' || !/^([01]\d|2[0-3]):[0-5]\d$/.test(value)) return null;
@@ -55,19 +64,28 @@ function init() {
   const inputs = Object.fromEntries(Object.keys(DEFAULTS).map(key => [key, form.elements.namedItem(key)]));
   const storageStatus = document.querySelector('#storage-status');
   let storageAvailable = true;
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (saved && typeof saved === 'object') {
+  let activeDate;
+  let dayTimer;
+
+  function restoreToday(date) {
+    activeDate = date;
+    for (const key of Object.keys(DEFAULTS)) inputs[key].value = DEFAULTS[key];
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (!saved || saved.date !== date || !saved.values || typeof saved.values !== 'object') return;
       for (const key of Object.keys(DEFAULTS)) {
-        if (saved[key] === '' || toMinutes(saved[key]) !== null) inputs[key].value = saved[key];
+        if (saved.values[key] === '' || toMinutes(saved.values[key]) !== null) inputs[key].value = saved.values[key];
       }
-    }
-  } catch { storageAvailable = false; }
+    } catch { storageAvailable = false; }
+  }
 
   function render() {
+    const today = localDateKey();
+    // Vérifier aussi lors d'une saisie, au cas où le navigateur aurait suspendu le timer.
+    if (today !== activeDate) restoreToday(today);
     const values = Object.fromEntries(Object.entries(inputs).map(([key, input]) => [key, input.value]));
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(values));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: activeDate, values }));
       storageAvailable = true;
     } catch { storageAvailable = false; }
     storageStatus.hidden = storageAvailable;
@@ -120,8 +138,21 @@ function init() {
   }
   form.addEventListener('submit', event => event.preventDefault());
   form.addEventListener('input', render);
+
+  function watchDay() {
+    clearTimeout(dayTimer);
+    if (localDateKey() !== activeDate) render();
+    // Minuit exact, avec contrôle périodique en cas de changement d'heure ou de fuseau.
+    dayTimer = setTimeout(watchDay, Math.min(untilLocalMidnight(), 60_000));
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') watchDay();
+  });
+  window.addEventListener('focus', watchDay);
+  window.addEventListener('pageshow', watchDay);
   render();
+  watchDay();
 }
 
 if (typeof document !== 'undefined') init();
-if (typeof module !== 'undefined') module.exports = { toMinutes, formatTime, calculate, buildSlots };
+if (typeof module !== 'undefined') module.exports = { toMinutes, formatTime, calculate, buildSlots, localDateKey, untilLocalMidnight };

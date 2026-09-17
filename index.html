@@ -7,16 +7,16 @@
   <meta name="theme-color" content="#fcf6f9">
   <title>Mes horaires · 8 heures au quotidien</title>
   <link rel="stylesheet" href="style.css?v=rose-3">
-  <script src="script.js?v=rose-4" defer></script>
+  <script src="script.js?v=day-storage-1" defer></script>
 </head>
 <body>
   <main class="widget" aria-label="Mes horaires">
     <div class="section-heading"><h1 id="timeline-title" class="widget-title">Votre journée, en un regard</h1></div>
     <form id="schedule" novalidate>
-      <div class="field"><label for="start">Début de journée</label><input id="start" name="start" type="time" value="08:30" required step="60"></div>
-      <div class="field"><label for="lunch-start">Début de pause</label><input id="lunch-start" name="lunchStart" type="time" value="12:30" required step="60"></div>
-      <div class="field"><label for="lunch-end">Fin de pause</label><input id="lunch-end" name="lunchEnd" type="time" value="13:30" required step="60"></div>
-      <div class="field finish"><label for="finish">Fin de journée <span>calculée</span></label><output id="finish" for="start lunch-start lunch-end" aria-live="polite">17:30</output></div>
+      <div class="field"><label for="start">Début de journée</label><input id="start" name="start" type="time" value="00:00" required step="60"></div>
+      <div class="field"><label for="lunch-start">Début de pause</label><input id="lunch-start" name="lunchStart" type="time" value="00:00" required step="60"></div>
+      <div class="field"><label for="lunch-end">Fin de pause</label><input id="lunch-end" name="lunchEnd" type="time" value="00:00" required step="60"></div>
+      <div class="field finish"><label for="finish">Fin de journée <span>calculée</span></label><output id="finish" for="start lunch-start lunch-end" aria-live="polite">08:00</output></div>
     </form>
     <p id="error" class="error" role="alert" hidden></p>
 
