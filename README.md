@@ -16,7 +16,7 @@ Puis ouvrir http://localhost:8000. Aucun build ni installation nécessaire.
 
 - Trois horaires modifiables ; fin de journée calculée immédiatement : début + 480 minutes + durée du déjeuner.
 - Valeurs initiales : 08:30, 12:30 et 13:30 → fin à 17:30.
-- Frise par cases de 15 minutes, repères horaires, travail en vert, déjeuner en sable avec un motif, hors travail en gris. Survoler une case affiche ses intervalles exacts.
+- Frise par cases de 15 minutes, repères horaires, travail en rose soutenu, déjeuner en rose poudré avec un motif, hors travail en gris rosé. Les cases travaillées se rejoignent en bandes continues ; la pause et le hors travail restent séparés. Survoler une case affiche ses intervalles exacts.
 - Les saisies restent précises à la minute : une case traversée par une limite affiche les couleurs dans les proportions correspondantes, sans arrondi du temps travaillé.
 - La plage s'étend aux heures entières avec au moins 30 minutes de marge, sauf aux limites de la journée (00:00 et 24:00).
 - Sur petit écran, les champs passent sur deux colonnes et seule la frise défile horizontalement, au doigt, au pavé tactile ou au clavier après sélection.

@@ -70,7 +70,8 @@ function init() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(values));
       storageAvailable = true;
     } catch { storageAvailable = false; }
-    storageStatus.textContent = storageAvailable ? 'Horaires enregistrés sur cet appareil' : 'Enregistrement indisponible dans ce navigateur';
+    storageStatus.hidden = storageAvailable;
+    storageStatus.textContent = storageAvailable ? '' : 'Enregistrement indisponible dans ce navigateur';
     const day = calculate(values);
     const error = document.querySelector('#error');
     error.hidden = !day.error;
@@ -83,9 +84,6 @@ function init() {
     document.querySelector('#result').hidden = Boolean(day.error);
     document.querySelector('#finish').textContent = day.error ? '—' : formatTime(day.finish);
     if (day.error) return;
-    const hours = Math.floor(day.pause / 60);
-    const minutes = day.pause % 60;
-    document.querySelector('#break-duration').textContent = `${[hours ? `${hours} h` : '', minutes || !hours ? `${minutes} min` : ''].filter(Boolean).join(' ')} de pause`;
     const timeline = document.querySelector('#timeline');
     timeline.setAttribute('aria-label', `Travail de ${formatTime(day.start)} à ${formatTime(day.lunchStart)}, pause déjeuner jusqu’à ${formatTime(day.lunchEnd)}, puis travail jusqu’à ${formatTime(day.finish)}. Total : 8 heures de travail effectif.`);
     const { from, to, slots } = buildSlots(day);
@@ -102,14 +100,18 @@ function init() {
     track.className = 'slots';
     track.style.setProperty('--count', slots.length);
     const names = { work: 'Travail', pause: 'Pause déjeuner', outside: 'Hors travail' };
-    slots.forEach(({ minute, parts }) => {
+    slots.forEach(({ minute, parts }, index) => {
       const slot = document.createElement('div');
-      slot.className = 'slot';
+      const joinsLeft = parts[0].state === 'work' && index > 0
+        && slots[index - 1].parts.some(part => part.state === 'work' && part.to === minute);
+      const joinsRight = parts.some(part => part.state === 'work' && part.to === minute + 15)
+        && slots[index + 1]?.parts[0].state === 'work';
+      slot.className = `slot${joinsLeft ? ' join-left' : ''}${joinsRight ? ' join-right' : ''}`;
       slot.title = parts.map(part => `${formatTime(part.from)}–${formatTime(part.to)} : ${names[part.state]}`).join('\n');
       const stops = parts.map(part => `var(--${part.state}) ${(part.from - minute) / 15 * 100}% ${(part.to - minute) / 15 * 100}%`);
       slot.style.background = `linear-gradient(to right, ${stops.join(', ')})`;
       // Un motif discret distingue aussi la pause par sa texture.
-      if (parts.length === 1 && parts[0].state === 'pause') slot.style.background = 'repeating-linear-gradient(135deg, transparent 0 3px, #b485292b 3px 4px), var(--pause)';
+      if (parts.length === 1 && parts[0].state === 'pause') slot.style.background = 'repeating-linear-gradient(135deg, transparent 0 3px, #a6577b30 3px 4px), var(--pause)';
       track.append(slot);
     });
     ticks.setAttribute('aria-hidden', 'true');
