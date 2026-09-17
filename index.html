@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f7f8f5">
+  <title>Mes horaires · 8 heures au quotidien</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="widget" aria-labelledby="title">
+    <header>
+      <div><p class="eyebrow">MON QUOTIDIEN</p><h1 id="title">Mes horaires<span aria-hidden="true">.</span></h1></div>
+      <span class="target"><span aria-hidden="true">◷</span> Objectif : 8 h</span>
+    </header>
+
+    <form id="schedule" novalidate>
+      <div class="field"><label for="start">Début de journée</label><input id="start" name="start" type="time" value="08:30" required step="60"></div>
+      <div class="field"><label for="lunch-start">Début de pause</label><input id="lunch-start" name="lunchStart" type="time" value="12:30" required step="60"></div>
+      <div class="field"><label for="lunch-end">Fin de pause</label><input id="lunch-end" name="lunchEnd" type="time" value="13:30" required step="60"></div>
+      <div class="field finish"><label for="finish">Fin de journée <span>calculée</span></label><output id="finish" for="start lunch-start lunch-end" aria-live="polite">17:30</output></div>
+    </form>
+    <p id="error" class="error" role="alert" hidden></p>
+
+    <section id="result" aria-labelledby="timeline-title">
+      <div class="section-heading"><h2 id="timeline-title">Votre journée, en un regard</h2><span class="resolution">1 case = 15 min</span></div>
+      <div class="timeline-scroll" tabindex="0" role="region" aria-label="Frise horaire. Faites défiler horizontalement pour voir toute la journée.">
+        <div id="timeline" class="timeline" role="img" aria-label=""></div>
+      </div>
+      <div class="timeline-footer">
+        <ul class="legend" aria-label="Légende"><li><i class="work"></i>Travail</li><li><i class="pause"></i>Pause déjeuner</li><li><i class="outside"></i>Hors travail</li></ul>
+        <span class="scroll-hint">Faites défiler la frise ↔</span>
+      </div>
+      <div class="summary" aria-live="polite"><span><span class="status-dot" aria-hidden="true"></span><strong>8 h</strong> de travail effectif</span><span id="break-duration">1 h de pause</span></div>
+    </section>
+    <footer><span id="storage-status">Horaires enregistrés sur cet appareil</span><span>À votre rythme.</span></footer>
+  </main>
+</body>
+</html>
